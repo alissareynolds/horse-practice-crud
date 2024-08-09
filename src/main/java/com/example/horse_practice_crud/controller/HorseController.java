@@ -63,6 +63,17 @@ public class HorseController {
         return new ResponseEntity<>(newHorse, HttpStatus.OK);
     }
 
+    @PatchMapping("/{id}")
+    public ResponseEntity<Horse> patchHorse(@RequestBody Horse horse, @PathVariable UUID id) {
+        Horse newHorse;
+        try {
+            newHorse = horseService.patch(horse, id);
+        } catch (HorseNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(newHorse, HttpStatus.OK);
+    }
+
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Horse> deleteHorseById(@PathVariable UUID id) {
         Horse horse;
