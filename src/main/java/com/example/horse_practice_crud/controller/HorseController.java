@@ -3,7 +3,6 @@ package com.example.horse_practice_crud.controller;
 import com.example.horse_practice_crud.exceptions.HorseNotFoundException;
 import com.example.horse_practice_crud.model.Horse;
 import com.example.horse_practice_crud.service.HorseService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,8 +14,11 @@ import java.util.UUID;
 @RequestMapping("/api/horses")
 public class HorseController {
 
-    @Autowired
-    HorseService horseService;
+    private final HorseService horseService;
+
+    public HorseController(HorseService horseService) {
+        this.horseService = horseService;
+    }
 
     @PostMapping
     public ResponseEntity<Horse> createHorse(@RequestBody Horse horse) {
@@ -26,7 +28,7 @@ public class HorseController {
 
     @GetMapping
     public ResponseEntity<List<Horse>> getAllHorses() {
-        List<Horse> horses = horseService.findAllHorses();
+        List<Horse> horses = horseService.getAll();
         return new ResponseEntity<>(horses, HttpStatus.OK);
     }
 
@@ -34,7 +36,7 @@ public class HorseController {
     public ResponseEntity<Horse> getHorseById(@PathVariable UUID id) {
         Horse horse;
         try {
-            horse = horseService.findHorseById(id);
+            horse = horseService.getById(id);
         } catch (HorseNotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -42,21 +44,16 @@ public class HorseController {
     }
 
     @GetMapping("/name/{name}")
-    public ResponseEntity<Horse> getHorseByName(@PathVariable String name) {
-        Horse horse;
-        try {
-            horse = horseService.findHorseByName(name);
-        } catch (HorseNotFoundException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity<>(horse, HttpStatus.OK);
+    public ResponseEntity<List<Horse>> getHorseByName(@PathVariable String name) {
+        List<Horse> horses = horseService.getByName(name);
+        return new ResponseEntity<>(horses, HttpStatus.OK);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Horse> updateHorse(@RequestBody Horse horse, @PathVariable UUID id) {
         Horse newHorse;
         try {
-            newHorse = horseService.updateHorse(horse, id);
+            newHorse = horseService.update(horse, id);
         } catch (HorseNotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -76,12 +73,7 @@ public class HorseController {
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Horse> deleteHorseById(@PathVariable UUID id) {
-        Horse horse;
-        try {
-            horse = horseService.deleteHorse(id);
-        } catch (HorseNotFoundException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity<>(horse, HttpStatus.OK);
+        horseService.delete(id);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

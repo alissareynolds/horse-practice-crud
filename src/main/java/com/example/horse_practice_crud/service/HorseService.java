@@ -3,7 +3,6 @@ package com.example.horse_practice_crud.service;
 import com.example.horse_practice_crud.exceptions.HorseNotFoundException;
 import com.example.horse_practice_crud.model.Horse;
 import com.example.horse_practice_crud.repository.HorseRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,49 +12,47 @@ import java.util.UUID;
 @Service
 public class HorseService {
 
-    @Autowired
-    HorseRepository horseRepository;
+    private final HorseRepository horseRepository;
 
-    public Horse create(Horse horse) {
-        Horse newHorse = new Horse(horse.getName(), horse.getColor(), horse.getGender(), horse.getBreed(), horse.getAge(), horse.getIsHappy());
-        return horseRepository.save(newHorse);
+    public HorseService(HorseRepository horseRepository) {
+        this.horseRepository = horseRepository;
     }
 
-    public List<Horse> findAllHorses() {
+    public Horse create(Horse horse) {
+        return horseRepository.save(horse);
+    }
+
+    public List<Horse> getAll() {
         return horseRepository.findAll();
     }
 
-    public Horse findHorseById(UUID id) {
-        Optional<Horse> horse = horseRepository.findById(id);
-        if (horse.isEmpty()) {
-            throw new HorseNotFoundException("A horse with that id was not found.");
+    public Horse getById(UUID id) {
+        Optional<Horse> optionalHorse = horseRepository.findById(id);
+        if (optionalHorse.isEmpty()) {
+            throw new HorseNotFoundException("A horse with id: " + id + " was not found.");
         }
-        return horse.get();
+        return optionalHorse.get();
     }
 
-    public Horse findHorseByName(String name) {
-        Optional<Horse> horse = horseRepository.findByName(name);
-        if (horse.isEmpty()) {
-            throw new HorseNotFoundException("A horse with that name was not found.");
-        }
-        return horse.get();
+    public List<Horse> getByName(String name) {
+        return horseRepository.findByName(name);
     }
 
-    public Horse updateHorse(Horse horse, UUID id) {
-        Optional<Horse> oldHorse = horseRepository.findById(id);
-        if (oldHorse.isEmpty()) {
-            throw new HorseNotFoundException("A horse with that id was not found.");
+    public Horse update(Horse horse, UUID id) {
+        Optional<Horse> optionalHorse = horseRepository.findById(id);
+        if (optionalHorse.isEmpty()) {
+            throw new HorseNotFoundException("A horse with id: " + id + " was not found.");
         }
-        Horse newHorse = new Horse(id, horse.getName(), horse.getColor(), horse.getGender(), horse.getBreed(), horse.getAge(), horse.getIsHappy());
-        return horseRepository.save(newHorse);
+        horse.setId(id);
+        return horseRepository.save(horse);
     }
 
     public Horse patch(Horse horse, UUID id) {
-        Optional<Horse> originalHorse = horseRepository.findById(id);
-        if (originalHorse.isEmpty()) {
+        Optional<Horse> optionalHorse = horseRepository.findById(id);
+        if (optionalHorse.isEmpty()) {
             throw new HorseNotFoundException("A horse with id: " + id + " was not found.");
         }
-        Horse updatedHorse = originalHorse.get();
+        Horse updatedHorse = optionalHorse.get();
         if (horse.getName() != null) {
             updatedHorse.setName(horse.getName());
         }
@@ -77,12 +74,7 @@ public class HorseService {
         return horseRepository.save(updatedHorse);
     }
 
-    public Horse deleteHorse(UUID id) {
-        Optional<Horse> horse = horseRepository.findById(id);
-        if (horse.isEmpty()) {
-            throw new HorseNotFoundException("A horse with this id was not found");
-        }
-        horseRepository.delete(horse.get());
-        return horse.get();
+    public void delete(UUID id) {
+        horseRepository.deleteById(id);
     }
 }

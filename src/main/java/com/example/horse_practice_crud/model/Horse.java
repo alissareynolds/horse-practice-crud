@@ -6,12 +6,10 @@ import lombok.NoArgsConstructor;
 
 import java.util.UUID;
 
-@Entity
-@Table(name = "horses")
+@Entity(name = "horses")
 @AllArgsConstructor
 @NoArgsConstructor
 public class Horse {
-
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -28,15 +26,6 @@ public class Horse {
     private Integer age;
 
     private Boolean isHappy;
-
-    public Horse(String name, String color, String gender, String breed, Integer age, Boolean isHappy) {
-        this.name = name;
-        this.color = color;
-        this.gender = gender;
-        this.breed = breed;
-        this.age = age;
-        this.isHappy = isHappy;
-    }
 
     public UUID getId() {
         return id;
