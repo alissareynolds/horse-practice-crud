@@ -44,4 +44,12 @@ public class HorseControllerIntegrationTest {
             throw new RuntimeException(e);
         }
     }
+
+    @Test
+    public void getAllHorses() throws Exception {
+        mvc.perform(MockMvcRequestBuilders
+                .get("/api/horses")
+                .accept(MediaType.APPLICATION_JSON)
+        ).andExpect(status().isOk());
+    }
 }
