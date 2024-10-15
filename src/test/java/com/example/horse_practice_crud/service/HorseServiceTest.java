@@ -77,5 +77,113 @@ class HorseServiceTest {
         assertEquals(recordWithId, response);
     }
 
+    @Test
+    public void update_throwsExceptionWhenHorseWasNotFound() {
+        Mockito.when(mockHorseRepository.findById(id)).thenReturn(Optional.empty());
+        HorseNotFoundException exception = assertThrows(HorseNotFoundException.class, () -> horseService.update(input, id));
+        assertEquals("A horse with id: " + id + " was not found.", exception.getMessage());
+    }
 
+    @Test
+    public void patch_throwsExceptionWhenHorseWasNotFound() {
+        Mockito.when(mockHorseRepository.findById(id)).thenReturn(Optional.empty());
+        HorseNotFoundException exception = assertThrows(HorseNotFoundException.class, () -> horseService.patch(input, id));
+        assertEquals("A horse with id: " + id + " was not found.", exception.getMessage());
+    }
+
+    @Test
+    public void patch_shouldReturnUpdatedName() {
+     Horse input = new Horse();
+     input.setName("Star");
+     Mockito.when(mockHorseRepository.findById(recordWithId.getId())).thenReturn(Optional.of(recordWithId));
+     Mockito.when(mockHorseRepository.save(Mockito.any())).thenAnswer(i -> i.getArguments()[0]);
+     Horse response = horseService.patch(input, recordWithId.getId());
+     assertEquals(recordWithId.getId(), response.getId());
+     assertEquals("Star", response.getName());
+     assertEquals("black", response.getColor());
+     assertEquals("gelding", response.getGender());
+     assertEquals("mustang", response.getBreed());
+     assertEquals(5, response.getAge());
+     assertEquals(true, response.getIsHappy());
+    }
+
+    @Test
+    public void patch_shouldReturnUpdatedColor() {
+        Horse input = new Horse();
+        input.setColor("roan");
+        Mockito.when(mockHorseRepository.findById(recordWithId.getId())).thenReturn(Optional.of(recordWithId));
+        Mockito.when(mockHorseRepository.save(Mockito.any())).thenAnswer(i -> i.getArguments()[0]);
+        Horse response = horseService.patch(input, recordWithId.getId());
+        assertEquals(recordWithId.getId(), response.getId());
+        assertEquals("Whisper", response.getName());
+        assertEquals("roan", response.getColor());
+        assertEquals("gelding", response.getGender());
+        assertEquals("mustang", response.getBreed());
+        assertEquals(5, response.getAge());
+        assertEquals(true, response.getIsHappy());
+    }
+
+    @Test
+    public void patch_shouldReturnUpdatedGender() {
+        Horse input = new Horse();
+        input.setGender("mare");
+        Mockito.when(mockHorseRepository.findById(recordWithId.getId())).thenReturn(Optional.of(recordWithId));
+        Mockito.when(mockHorseRepository.save(Mockito.any())).thenAnswer(i -> i.getArguments()[0]);
+        Horse response = horseService.patch(input, recordWithId.getId());
+        assertEquals(recordWithId.getId(), response.getId());
+        assertEquals("Whisper", response.getName());
+        assertEquals("black", response.getColor());
+        assertEquals("mare", response.getGender());
+        assertEquals("mustang", response.getBreed());
+        assertEquals(5, response.getAge());
+        assertEquals(true, response.getIsHappy());
+    }
+
+    @Test
+    public void patch_shouldReturnUpdatedBreed() {
+        Horse input = new Horse();
+        input.setBreed("quarter horse");
+        Mockito.when(mockHorseRepository.findById(recordWithId.getId())).thenReturn(Optional.of(recordWithId));
+        Mockito.when(mockHorseRepository.save(Mockito.any())).thenAnswer(i -> i.getArguments()[0]);
+        Horse response = horseService.patch(input, recordWithId.getId());
+        assertEquals(recordWithId.getId(), response.getId());
+        assertEquals("Whisper", response.getName());
+        assertEquals("black", response.getColor());
+        assertEquals("gelding", response.getGender());
+        assertEquals("quarter horse", response.getBreed());
+        assertEquals(5, response.getAge());
+        assertEquals(true, response.getIsHappy());
+    }
+
+    @Test
+    public void patch_shouldReturnUpdatedAge() {
+        Horse input = new Horse();
+        input.setAge(7);
+        Mockito.when(mockHorseRepository.findById(recordWithId.getId())).thenReturn(Optional.of(recordWithId));
+        Mockito.when(mockHorseRepository.save(Mockito.any())).thenAnswer(i -> i.getArguments()[0]);
+        Horse response = horseService.patch(input, recordWithId.getId());
+        assertEquals(recordWithId.getId(), response.getId());
+        assertEquals("Whisper", response.getName());
+        assertEquals("black", response.getColor());
+        assertEquals("gelding", response.getGender());
+        assertEquals("mustang", response.getBreed());
+        assertEquals(7, response.getAge());
+        assertEquals(true, response.getIsHappy());
+    }
+
+    @Test
+    public void patch_shouldReturnUpdatedIsHappy() {
+        Horse input = new Horse();
+        input.setIsHappy(false);
+        Mockito.when(mockHorseRepository.findById(recordWithId.getId())).thenReturn(Optional.of(recordWithId));
+        Mockito.when(mockHorseRepository.save(Mockito.any())).thenAnswer(i -> i.getArguments()[0]);
+        Horse response = horseService.patch(input, recordWithId.getId());
+        assertEquals(recordWithId.getId(), response.getId());
+        assertEquals("Whisper", response.getName());
+        assertEquals("black", response.getColor());
+        assertEquals("gelding", response.getGender());
+        assertEquals("mustang", response.getBreed());
+        assertEquals(5, response.getAge());
+        assertEquals(false, response.getIsHappy());
+    }
 }
