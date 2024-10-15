@@ -13,6 +13,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.util.List;
 import java.util.UUID;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -59,6 +60,14 @@ public class HorseControllerIntegrationTest {
         Mockito.when(mockHorseService.getById(UUID.fromString("59c47568-fde0-4dd7-9aef-03db6a962810"))).thenReturn(new Horse());
         mvc.perform(MockMvcRequestBuilders
                 .get("/api/horses/59c47568-fde0-4dd7-9aef-03db6a962810").accept(MediaType.APPLICATION_JSON)
+        ).andExpect(status().isOk());
+    }
+
+    @Test
+    public void getHorseByName() throws Exception {
+        Mockito.when(mockHorseService.getByName("Whisper")).thenReturn(List.of(new Horse()));
+        mvc.perform(MockMvcRequestBuilders
+                .get("/api/horses/name/Whisper").accept(MediaType.APPLICATION_JSON)
         ).andExpect(status().isOk());
     }
 }
