@@ -92,4 +92,15 @@ public class HorseControllerIntegrationTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
+
+    @Test
+    public void deleteHorseById() throws Exception {
+        Mockito.when(mockHorseService.getById(UUID.fromString("59c47568-fde0-4dd7-9aef-03db6a962810"))).thenReturn(horse);
+        mvc.perform( MockMvcRequestBuilders
+                        .delete("/api/horses/delete/59c47568-fde0-4dd7-9aef-03db6a962810")
+                        .content(asJsonString(horse))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
 }
