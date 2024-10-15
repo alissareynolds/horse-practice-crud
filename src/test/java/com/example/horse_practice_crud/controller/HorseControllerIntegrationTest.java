@@ -4,6 +4,7 @@ import com.example.horse_practice_crud.model.Horse;
 import com.example.horse_practice_crud.service.HorseService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -50,6 +51,14 @@ public class HorseControllerIntegrationTest {
         mvc.perform(MockMvcRequestBuilders
                 .get("/api/horses")
                 .accept(MediaType.APPLICATION_JSON)
+        ).andExpect(status().isOk());
+    }
+
+    @Test
+    public void getHorseById() throws Exception {
+        Mockito.when(mockHorseService.getById(UUID.fromString("59c47568-fde0-4dd7-9aef-03db6a962810"))).thenReturn(new Horse());
+        mvc.perform(MockMvcRequestBuilders
+                .get("/api/horses/59c47568-fde0-4dd7-9aef-03db6a962810").accept(MediaType.APPLICATION_JSON)
         ).andExpect(status().isOk());
     }
 }
