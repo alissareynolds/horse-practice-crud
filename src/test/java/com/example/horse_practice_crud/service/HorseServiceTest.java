@@ -186,4 +186,10 @@ class HorseServiceTest {
         assertEquals(5, response.getAge());
         assertEquals(false, response.getIsHappy());
     }
+
+    @Test
+    public void delete_callsRepositoryDeleteMethod() {
+        horseService.delete(id);
+        Mockito.verify(mockHorseRepository).deleteById(id);
+    }
 }
